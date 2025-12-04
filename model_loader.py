@@ -1,9 +1,19 @@
+import os
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 from langchain_huggingface import HuggingFacePipeline, ChatHuggingFace
+from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from typing import Annotated, TypedDict, Optional, Dict, Any
+
+
+avalai_api_key = os.getenv("AVALAI_API_KEY")
+openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
+
+avalai_api_url = "https://api.avalai.ir/v1"
+openrouter_api_url = "https://openrouter.ai/api/v1"
+
 
 DEFAULT_PIPELINE_KWARGS: Dict[str, Any] = {
     "temperature": 0.2,
@@ -57,3 +67,46 @@ def load_model_huggingface(
     )
 
     return chat_model
+
+
+def _ensure_api_key(api_key: Optional[str], provider_name: str, env_var: str) -> str:
+    """
+    Helper to make sure a provider API key is configured.
+    """
+    if not api_key:
+        raise RuntimeError(f"{provider_name} API key not set; please export {env_var}.")
+    return api_key
+
+
+def load_model_avalai(
+    model_name: str,
+    temperature: float = 0,
+    extra: Optional[Dict[str, Any]] = None,
+) -> ChatOpenAI:
+    """
+    Build an Avalai-backed `ChatOpenAI` instance.
+    """
+    return ChatOpenAI(
+        model=model_name,
+        temperature=temperature,
+        api_key=_ensure_api_key(avalai_api_key, "Avalai", "AVALAI_API_KEY"),
+        base_url=avalai_api_url,
+        **(extra or {}),
+    )
+
+
+def load_model_openrouter(
+    model_name: str,
+    temperature: float = 0,
+    extra: Optional[Dict[str, Any]] = None,
+) -> ChatOpenAI:
+    """
+    Build an OpenRouter-backed `ChatOpenAI` instance.
+    """
+    return ChatOpenAI(
+        model=model_name,
+        temperature=temperature,
+        api_key=_ensure_api_key(openrouter_api_key, "OpenRouter", "OPENROUTER_API_KEY"),
+        base_url=openrouter_api_url,
+        **(extra or {}),
+    )
