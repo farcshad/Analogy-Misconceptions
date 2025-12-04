@@ -4,4 +4,5 @@ langchain-huggingface
 langchain-openai
 langgraph
 python-dotenv
+huggingface_hub
 
