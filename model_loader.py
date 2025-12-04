@@ -16,7 +16,7 @@ openrouter_api_url = "https://openrouter.ai/api/v1"
 
 
 DEFAULT_PIPELINE_KWARGS: Dict[str, Any] = {
-    "temperature": 0.2,
+    "temperature": 1,
     "max_new_tokens": 512,
 }
 
@@ -71,16 +71,21 @@ def load_model_huggingface(
 
 def load_model_avalai(
     model_name: str,
+    api_key: str = None,
     temperature: float = 0,
     extra: Optional[Dict[str, Any]] = None,
 ) -> ChatOpenAI:
     """
     Build an Avalai-backed `ChatOpenAI` instance.
     """
+
+    if avalai_api_key is not None:
+        api_key = avalai_api_key
+    
     return ChatOpenAI(
         model=model_name,
         temperature=temperature,
-        api_key=avalai_api_key,
+        api_key=api_key,
         base_url=avalai_api_url,
         **(extra or {}),
     )
@@ -88,18 +93,19 @@ def load_model_avalai(
 
 def load_model_openrouter(
     model_name: str,
+    api_key: str = None,
     temperature: float = 0,
     extra: Optional[Dict[str, Any]] = None,
 ) -> ChatOpenAI:
     """
     Build an OpenRouter-backed `ChatOpenAI` instance.
     """
-
-    print(openrouter_api_url)
+    if openrouter_api_key is not None:
+        api_key = openrouter_api_key
     return ChatOpenAI(
         model=model_name,
         temperature=temperature,
-        api_key=openrouter_api_key,
+        api_key=api_key,
         base_url=openrouter_api_url,
         **(extra or {}),
     )
