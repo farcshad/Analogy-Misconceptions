@@ -69,15 +69,6 @@ def load_model_huggingface(
     return chat_model
 
 
-def _ensure_api_key(api_key: Optional[str], provider_name: str, env_var: str) -> str:
-    """
-    Helper to make sure a provider API key is configured.
-    """
-    if not api_key:
-        raise RuntimeError(f"{provider_name} API key not set; please export {env_var}.")
-    return api_key
-
-
 def load_model_avalai(
     model_name: str,
     temperature: float = 0,
@@ -89,7 +80,7 @@ def load_model_avalai(
     return ChatOpenAI(
         model=model_name,
         temperature=temperature,
-        api_key=_ensure_api_key(avalai_api_key, "Avalai", "AVALAI_API_KEY"),
+        api_key=avalai_api_key,
         base_url=avalai_api_url,
         **(extra or {}),
     )
@@ -106,7 +97,7 @@ def load_model_openrouter(
     return ChatOpenAI(
         model=model_name,
         temperature=temperature,
-        api_key=_ensure_api_key(openrouter_api_key, "OpenRouter", "OPENROUTER_API_KEY"),
+        api_key=openrouter_api_key,
         base_url=openrouter_api_url,
         **(extra or {}),
     )
