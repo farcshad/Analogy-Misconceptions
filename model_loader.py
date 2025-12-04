@@ -95,7 +95,7 @@ def load_model_openrouter(
     Build an OpenRouter-backed `ChatOpenAI` instance.
     """
 
-    openrouter_api_url
+    print(openrouter_api_url)
     return ChatOpenAI(
         model=model_name,
         temperature=temperature,
