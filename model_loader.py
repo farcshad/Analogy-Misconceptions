@@ -10,6 +10,7 @@ from typing import Annotated, TypedDict, Optional, Dict, Any
 
 avalai_api_key = os.getenv("AVALAI_API_KEY")
 openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
+huggingface_api_key = os.getenv("HUGGINGFACE_API_KEY")
 
 avalai_api_url = "https://api.avalai.ir/v1"
 openrouter_api_url = "https://openrouter.ai/api/v1"
@@ -23,6 +24,7 @@ DEFAULT_PIPELINE_KWARGS: Dict[str, Any] = {
 
 def load_model_huggingface(
     model_name: str,
+    api_key: str = None,
     device: str = "cpu",
     load_in_8bit: bool = False,
     trust_remote_code: bool = False,
@@ -39,6 +41,24 @@ def load_model_huggingface(
     - pipeline_kwargs: optional dict of keyword arguments passed to
       `transformers.pipeline(...)` so callers can customize generation params.
     """
+
+
+    from huggingface_hub import login
+
+    if api_key is not None:
+        pass
+    else:
+        if huggingface_api_key is not None:
+            api_key = huggingface_api_key
+        if huggingface_api_key is None:
+            from google.colab import userdata
+            api_key = userdata.get('HUGGINGFACE_API_KEY')
+        else:
+            raise ValueError("HF API key is not set")
+
+    login(token=api_key)
+
+
     tokenizer = AutoTokenizer.from_pretrained(
         model_name, use_fast=True, trust_remote_code=trust_remote_code
     )
@@ -78,14 +98,17 @@ def load_model_avalai(
     """
     Build an Avalai-backed `ChatOpenAI` instance.
     """
-
-    if avalai_api_key is not None:
-        api_key = avalai_api_key
-    if api_key is None:
-        from google.colab import userdata
-        api_key = userdata.get('AVALAI_API_KEY')
+    if api_key is not None:
+        pass
     else:
-        raise ValueError("API key is not set")
+        if avalai_api_key is not None:
+            api_key = avalai_api_key
+        if api_key is None:
+            from google.colab import userdata
+            api_key = userdata.get('AVALAI_API_KEY')
+        else:
+            raise ValueError("API key is not set")
+
     return ChatOpenAI(
         model=model_name,
         temperature=temperature,
@@ -105,14 +128,18 @@ def load_model_openrouter(
     Build an OpenRouter-backed `ChatOpenAI` instance.
     """
 
-    if openrouter_api_key is not None:
-        api_key = openrouter_api_key
 
-    if api_key is None:
-        from google.colab import userdata
-        api_key = userdata.get('OPENROUTER_API_KEY')
+    if api_key is not None:
+        pass
     else:
-        raise ValueError("API key is not set")
+        if openrouter_api_key is not None:
+            api_key = openrouter_api_key
+
+        if api_key is None:
+            from google.colab import userdata
+            api_key = userdata.get('OPENROUTER_API_KEY')
+        else:
+            raise ValueError("API key is not set")
 
     return ChatOpenAI(
         model=model_name,
