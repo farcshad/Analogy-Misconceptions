@@ -1,0 +1,28 @@
+{
+  "created_at_utc": "20251111T155236Z",
+  "type": "gpqa_full_corpus_snapshot",
+  "include_logs": false,
+  "files": [
+    {
+      "role": "subject_csv",
+      "subject": "Physics",
+      "path": "gpqa_runs/gpqa_physics.csv",
+      "size_bytes": 3213919,
+      "sha256": "9dd20bf094275c17436e07f78ff0f4223b40562b446cdf99ee4145d7c0e742d6"
+    },
+    {
+      "role": "subject_csv",
+      "subject": "Biology",
+      "path": "gpqa_runs/gpqa_biology.csv",
+      "size_bytes": 1555885,
+      "sha256": "b29395e0d6e1d3212ebc0e840fad1ee2fe84bba92f3938ab4417c7b313a4494b"
+    },
+    {
+      "role": "subject_csv",
+      "subject": "Chemistry",
+      "path": "gpqa_runs/gpqa_chemistry.csv",
+      "size_bytes": 3344302,
+      "sha256": "b37b2585b99cbc1efd2a39d4cc11638ed50eeb6dda9dc0cdf9ab7f8f7f2a448a"
+    }
+  ]
+}
